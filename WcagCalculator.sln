@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WcagCalculator", "WcagCalculator\WcagCalculator.csproj", "{4421A529-6A3C-4DBB-80F8-21E42FB81584}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContrastColorLibrary", "ContrastColorLibrary\ContrastColorLibrary.csproj", "{6D85B286-461B-44BF-873C-F1E9CF5962AB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4421A529-6A3C-4DBB-80F8-21E42FB81584}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4421A529-6A3C-4DBB-80F8-21E42FB81584}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4421A529-6A3C-4DBB-80F8-21E42FB81584}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4421A529-6A3C-4DBB-80F8-21E42FB81584}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D85B286-461B-44BF-873C-F1E9CF5962AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D85B286-461B-44BF-873C-F1E9CF5962AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D85B286-461B-44BF-873C-F1E9CF5962AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D85B286-461B-44BF-873C-F1E9CF5962AB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
