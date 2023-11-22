@@ -1,7 +1,7 @@
-﻿using System.Drawing;
+﻿using Wpf = System.Drawing;
 using ContrastColorLibrary.Models;
 using SkiaSharp;
-using Maui = Microsoft.Maui.Graphics;
+using Microsoft.Maui.Graphics;
 namespace ContrastColorLibrary;
 
 public class ContrastService
@@ -31,18 +31,24 @@ public class ContrastService
         return _wcag.CalculateContrastRatio(backgroundColor, foregroundColor);
     }
     
+    public ContrastRatioResult CalculateContrastRatio(Wpf.Color backgroundColor, Wpf.Color foregroundColor)
+    {
+        return new ContrastRatioResult(_wcag.CalculateContrastRatio(backgroundColor, foregroundColor),
+            _apca.CalculateContrastRatio(backgroundColor, foregroundColor));
+    }
+    
     public ContrastRatioResult CalculateContrastRatio(Color backgroundColor, Color foregroundColor)
     {
         return new ContrastRatioResult(_wcag.CalculateContrastRatio(backgroundColor, foregroundColor),
             _apca.CalculateContrastRatio(backgroundColor, foregroundColor));
     }
 
-    public double CalculateContrastRatioApca(Maui.Color backgroundColor, Maui.Color foregroundColor)
+    public double CalculateContrastRatioApca(Color backgroundColor, Color foregroundColor)
     {
         return _apca.CalculateContrastRatio(backgroundColor, foregroundColor);
     }
 
-    public double CalculateContrastRatioWcag(Maui.Color backgroundColor, Maui.Color foregroundColor)
+    public double CalculateContrastRatioWcag(Color backgroundColor, Color foregroundColor)
     {
         return _wcag.CalculateContrastRatio(backgroundColor, foregroundColor);
     }
@@ -209,82 +215,12 @@ public class ContrastService
         return new MostContrastColorsResult<SKColor>(wcagMax, color, wcagColor);
     }
     
-    public MostContrastColorAlgorithmsResult<Maui.Color> FindMostContrastColorFromList(Maui.Color color, params Maui.Color[] vsColors)
-    {
-        var apcaMax = double.NegativeInfinity;
-        var wcagMax = double.NegativeInfinity;
-        Maui.Color apcaColor = null;
-        Maui.Color wcagColor = null;
-        
-        foreach (var skColor in vsColors)
-        {
-            var apca = _apca.CalculateContrastRatio(color, skColor);
-            var wcag = _apca.CalculateContrastRatio(color, skColor);
-
-            if (Math.Abs(apcaMax) < Math.Abs(apca))
-            {
-                apcaColor = skColor;
-                apcaMax = apca;
-            }
-
-            if (wcagMax < wcag)
-            {
-                wcagColor = skColor;
-                wcagMax = wcag;
-            }
-        }
-
-        var wcagResult = new MostContrastColorsResult<Maui.Color>(wcagMax, color, wcagColor);
-        var apcaResult = new MostContrastColorsResult<Maui.Color>(apcaMax, color, apcaColor);
-
-        return new MostContrastColorAlgorithmsResult<Maui.Color>(wcagResult, apcaResult);
-    }
-    
-    public MostContrastColorsResult<Maui.Color> FindMostContrastColorFromListByApca(Maui.Color color, params Maui.Color[] vsColors)
-    {
-        var apcaMax = double.NegativeInfinity;
-        Maui.Color apcaColor = null;
-        
-        foreach (var skColor in vsColors)
-        {
-            var apca = _apca.CalculateContrastRatio(color, skColor);
-            var wcag = _apca.CalculateContrastRatio(color, skColor);
-
-            if (Math.Abs(apcaMax) < Math.Abs(apca))
-            {
-                apcaColor = skColor;
-                apcaMax = apca;
-            }
-        }
-        
-        return new MostContrastColorsResult<Maui.Color>(apcaMax, color, apcaColor);
-    }
-    
-    public MostContrastColorsResult<Maui.Color> FindMostContrastColorFromListByWcag(Maui.Color color, params Maui.Color[] vsColors)
-    {
-        var wcagMax = double.NegativeInfinity;
-        Maui.Color wcagColor = null;
-        
-        foreach (var skColor in vsColors)
-        {
-            var wcag = _apca.CalculateContrastRatio(color, skColor);
-
-            if (wcagMax < wcag)
-            {
-                wcagColor = skColor;
-                wcagMax = wcag;
-            }
-        }
-
-        return new MostContrastColorsResult<Maui.Color>(wcagMax, color, wcagColor);
-    }
-    
     public MostContrastColorAlgorithmsResult<Color> FindMostContrastColorFromList(Color color, params Color[] vsColors)
     {
         var apcaMax = double.NegativeInfinity;
         var wcagMax = double.NegativeInfinity;
-        Color apcaColor = Color.Empty;
-        Color wcagColor = Color.Empty;
+        Color apcaColor = null;
+        Color wcagColor = null;
         
         foreach (var skColor in vsColors)
         {
@@ -313,7 +249,7 @@ public class ContrastService
     public MostContrastColorsResult<Color> FindMostContrastColorFromListByApca(Color color, params Color[] vsColors)
     {
         var apcaMax = double.NegativeInfinity;
-        Color apcaColor = Color.Empty;
+        Color apcaColor = null;
         
         foreach (var skColor in vsColors)
         {
@@ -333,7 +269,7 @@ public class ContrastService
     public MostContrastColorsResult<Color> FindMostContrastColorFromListByWcag(Color color, params Color[] vsColors)
     {
         var wcagMax = double.NegativeInfinity;
-        Color wcagColor = Color.Empty;
+        Color wcagColor = null;
         
         foreach (var skColor in vsColors)
         {
@@ -347,5 +283,75 @@ public class ContrastService
         }
 
         return new MostContrastColorsResult<Color>(wcagMax, color, wcagColor);
+    }
+    
+    public MostContrastColorAlgorithmsResult<Wpf.Color> FindMostContrastColorFromList(Wpf.Color color, params Wpf.Color[] vsColors)
+    {
+        var apcaMax = double.NegativeInfinity;
+        var wcagMax = double.NegativeInfinity;
+        Wpf.Color apcaColor = Wpf.Color.Empty;
+        Wpf.Color wcagColor = Wpf.Color.Empty;
+        
+        foreach (var skColor in vsColors)
+        {
+            var apca = _apca.CalculateContrastRatio(color, skColor);
+            var wcag = _apca.CalculateContrastRatio(color, skColor);
+
+            if (Math.Abs(apcaMax) < Math.Abs(apca))
+            {
+                apcaColor = skColor;
+                apcaMax = apca;
+            }
+
+            if (wcagMax < wcag)
+            {
+                wcagColor = skColor;
+                wcagMax = wcag;
+            }
+        }
+
+        var wcagResult = new MostContrastColorsResult<Wpf.Color>(wcagMax, color, wcagColor);
+        var apcaResult = new MostContrastColorsResult<Wpf.Color>(apcaMax, color, apcaColor);
+
+        return new MostContrastColorAlgorithmsResult<Wpf.Color>(wcagResult, apcaResult);
+    }
+    
+    public MostContrastColorsResult<Wpf.Color> FindMostContrastColorFromListByApca(Wpf.Color color, params Wpf.Color[] vsColors)
+    {
+        var apcaMax = double.NegativeInfinity;
+        Wpf.Color apcaColor = Wpf.Color.Empty;
+        
+        foreach (var skColor in vsColors)
+        {
+            var apca = _apca.CalculateContrastRatio(color, skColor);
+            var wcag = _apca.CalculateContrastRatio(color, skColor);
+
+            if (Math.Abs(apcaMax) < Math.Abs(apca))
+            {
+                apcaColor = skColor;
+                apcaMax = apca;
+            }
+        }
+        
+        return new MostContrastColorsResult<Wpf.Color>(apcaMax, color, apcaColor);
+    }
+    
+    public MostContrastColorsResult<Wpf.Color> FindMostContrastColorFromListByWcag(Wpf.Color color, params Wpf.Color[] vsColors)
+    {
+        var wcagMax = double.NegativeInfinity;
+        Wpf.Color wcagColor = Wpf.Color.Empty;
+        
+        foreach (var skColor in vsColors)
+        {
+            var wcag = _apca.CalculateContrastRatio(color, skColor);
+
+            if (wcagMax < wcag)
+            {
+                wcagColor = skColor;
+                wcagMax = wcag;
+            }
+        }
+
+        return new MostContrastColorsResult<Wpf.Color>(wcagMax, color, wcagColor);
     }
 }

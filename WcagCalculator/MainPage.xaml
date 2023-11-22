@@ -1,44 +1,417 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:controls="clr-namespace:Maui.ColorPicker;assembly=Maui.ColorPicker"
+             xmlns:viewModels="using:WcagCalculator.ViewModels"
+             xmlns:converters="using:WcagCalculator.Converters"
+             xmlns:system="using:System"
              Shell.NavBarIsVisible="False"
-             x:Class="WcagCalculator.MainPage">
+             x:Class="WcagCalculator.MainPage"
+             x:DataType="viewModels:MainPageViewModel">
+    <ContentPage.Resources>
+        <converters:PassConverter x:Key="PassConverter" />
+    </ContentPage.Resources>
 
     <ScrollView>
-        <HorizontalStackLayout
-            Spacing="25"
-            Padding="30,0"
-            VerticalOptions="Center">
+        <VerticalStackLayout Padding="10"
+                             Spacing="25">
+            <HorizontalStackLayout
+                Spacing="25"
+                Padding="30,0"
+                VerticalOptions="Start"
+                HorizontalOptions="Center">
+                <Frame CornerRadius="10">
+                    <VerticalStackLayout Padding="10"
+                                         Spacing="5">
+                        <HorizontalStackLayout Spacing="10">
+                            <Label Text="Background"
+                                   SemanticProperties.HeadingLevel="Level1"
+                                   FontSize="32" />
+                            <Entry Text="{Binding BackgroundColorHex}"
+                                   WidthRequest="150"
+                                   HorizontalOptions="End">
+                            </Entry>
+                        </HorizontalStackLayout>
+                        <Border HeightRequest="200"
+                                HorizontalOptions="Center"
+                                WidthRequest="350">
+                            <controls:ColorPicker x:Name="ColorPicker"
+                                                  ColorFlowDirection="Vertical"
+                                                  ColorSpectrumStyle="TintToHueToShadeStyle"
+                                                  PointerRingBorderUnits="0.3"
+                                                  PointerRingDiameterUnits="0.7"
+                                                  PickedColor="{Binding BackgroundColor, Mode=TwoWay}" />
+                        </Border>
+                    </VerticalStackLayout>
+                </Frame>
+                <Button Text="Swap"
+                        VerticalOptions="Center"
+                        Command="{Binding SwapCommand}" />
+                <Frame CornerRadius="10"
+                       HorizontalOptions="End">
+                    <VerticalStackLayout Padding="10"
+                                         Spacing="5">
+                        <HorizontalStackLayout Spacing="10"
+                                               HorizontalOptions="End">
+                            <Label Text="Foreground"
+                                   SemanticProperties.HeadingLevel="Level1"
+                                   FontSize="32" />
+                            <Entry Text="{Binding ForegroundColorHex}"
+                                   WidthRequest="150">
+                            </Entry>
+                        </HorizontalStackLayout>
+                        <Border HeightRequest="200"
+                                HorizontalOptions="Center"
+                                WidthRequest="350">
+                            <controls:ColorPicker x:Name="ColorPicker2"
+                                                  ColorFlowDirection="Vertical"
+                                                  ColorSpectrumStyle="TintToHueToShadeStyle"
+                                                  PointerRingBorderUnits="0.3"
+                                                  PointerRingDiameterUnits="0.7"
+                                                  PickedColor="{Binding ForegroundColor, Mode=TwoWay}" />
+                        </Border>
+                    </VerticalStackLayout>
+                </Frame>
+            </HorizontalStackLayout>
+            <HorizontalStackLayout HorizontalOptions="Center"
+                                   Spacing="25"
+                                   Padding="10">
+                <Frame CornerRadius="10">
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="WCAG Contrast Ratio"
+                               SemanticProperties.HeadingLevel="Level1"
+                               FontSize="24" />
+                        <Label SemanticProperties.HeadingLevel="Level1"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"
+                               FontSize="32"
+                               Text="{Binding WcagResult, StringFormat='{0:F0}:1'}" />
+                    </VerticalStackLayout>
+                </Frame>
+                <Frame CornerRadius="10">
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="APCA Contrast Ratio"
+                               FontSize="24"
+                               SemanticProperties.HeadingLevel="Level1" />
+                        <Label SemanticProperties.HeadingLevel="Level1"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"
+                               FontSize="32"
+                               Text="{Binding ApcaResult, StringFormat='{0:F0}'}" />
+                    </VerticalStackLayout>
+                </Frame>
+            </HorizontalStackLayout>
+            <HorizontalStackLayout>
+                <VerticalStackLayout>
+                    
+            <Frame CornerRadius="10"
+                   WidthRequest="700"
+                   HorizontalOptions="Start"
+                   Margin="50, 0">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Normal Text"
+                           HorizontalOptions="Center"
+                           FontSize="24" />
+                    <HorizontalStackLayout Spacing="25">
+                        <VerticalStackLayout Spacing="10"
+                                             VerticalOptions="Center">
+                            <Label FontSize="18">
+                                <Label.Text>
+                                    <x:Binding Path="WcagResult"
+                                               Converter="{StaticResource PassConverter}"
+                                               StringFormat="WCAG AA: {0}">
+                                        <x:Binding.ConverterParameter>
+                                            <x:Double>4.5</x:Double>
+                                        </x:Binding.ConverterParameter>
+                                    </x:Binding>
+                                </Label.Text>
+                            </Label>
+                            <Label FontSize="18">
+                                <Label.Text>
+                                    <x:Binding Path="WcagResult"
+                                               Converter="{StaticResource PassConverter}"
+                                               StringFormat="WCAG AAA: {0}">
+                                        <x:Binding.ConverterParameter>
+                                            <x:Double>7</x:Double>
+                                        </x:Binding.ConverterParameter>
+                                    </x:Binding>
+                                </Label.Text>
+                            </Label>
+                        </VerticalStackLayout>
+                        <Border BackgroundColor="{Binding BackgroundColor}"
+                                HeightRequest="100"
+                                WidthRequest="500">
+                            <Label VerticalOptions="Center"
+                                   HorizontalOptions="Center"
+                                   Text="The five boxing wizards jump quickly."
+                                   FontSize="20"
+                                   TextColor="{Binding ForegroundColor}" />
+                        </Border>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
 
-            <Image
-                Source="dotnet_bot.png"
-                SemanticProperties.Description="Cute dot net bot waving hi to you!"
-                HeightRequest="200"
-                HorizontalOptions="Center" />
+            <Frame CornerRadius="10"
+                   WidthRequest="700"
+                   HorizontalOptions="Start"
+                   Margin="50, 0">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Large Text"
+                           HorizontalOptions="Center"
+                           FontSize="24" />
+                    <HorizontalStackLayout Spacing="25">
+                        <VerticalStackLayout Spacing="10"
+                                             VerticalOptions="Center">
+                            <Label FontSize="18">
+                                <Label.Text>
+                                    <x:Binding Path="WcagResult"
+                                               Converter="{StaticResource PassConverter}"
+                                               StringFormat="WCAG AA: {0}">
+                                        <x:Binding.ConverterParameter>
+                                            <x:Double>3</x:Double>
+                                        </x:Binding.ConverterParameter>
+                                    </x:Binding>
+                                </Label.Text>
+                            </Label>
+                            <Label FontSize="18">
+                                <Label.Text>
+                                    <x:Binding Path="WcagResult"
+                                               Converter="{StaticResource PassConverter}"
+                                               StringFormat="WCAG AAA: {0}">
+                                        <x:Binding.ConverterParameter>
+                                            <x:Double>4.5</x:Double>
+                                        </x:Binding.ConverterParameter>
+                                    </x:Binding>
+                                </Label.Text>
+                            </Label>
+                        </VerticalStackLayout>
+                        <Border BackgroundColor="{Binding BackgroundColor}"
+                                HeightRequest="100"
+                                WidthRequest="500">
+                            <Label VerticalOptions="Center"
+                                   HorizontalOptions="Center"
+                                   Text="The five boxing wizards jump quickly."
+                                   FontSize="28"
+                                   FontAttributes="Bold"
+                                   TextColor="{Binding ForegroundColor}" />
+                        </Border>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
 
-            <Label
-                Text="Hello, World!"
-                SemanticProperties.HeadingLevel="Level1"
-                FontSize="32"
-                HorizontalOptions="Center" />
-            <Border HeightRequest="200"
-                    HorizontalOptions="Center"
-                    WidthRequest="350">
-            <controls:ColorPicker x:Name="ColorPicker"
-                                  ColorFlowDirection="Horizontal"
-                                  ColorSpectrumStyle="TintToHueToShadeStyle"
-                                  PointerRingBorderUnits="0.3"
-                                  PointerRingDiameterUnits="0.7"></controls:ColorPicker>
-            </Border>
-            <Button
-                x:Name="CounterBtn"
-                Text="Click me"
-                SemanticProperties.Hint="Counts the number of times you click"
-                Clicked="OnCounterClicked"
-                HorizontalOptions="Center" />
-
-        </HorizontalStackLayout>
+            <Frame CornerRadius="10"
+                   WidthRequest="700"
+                   HorizontalOptions="Start"
+                   Margin="50, 0">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Graphical Objects and User Interface Components"
+                           HorizontalOptions="Center"
+                           FontSize="24" />
+                    <HorizontalStackLayout Spacing="25">
+                            <Label FontSize="18"
+                                   VerticalOptions="Center">
+                                <Label.Text>
+                                    <x:Binding Path="WcagResult"
+                                               Converter="{StaticResource PassConverter}"
+                                               StringFormat="WCAG AA: {0}">
+                                        <x:Binding.ConverterParameter>
+                                            <x:Double>3</x:Double>
+                                        </x:Binding.ConverterParameter>
+                                    </x:Binding>
+                                </Label.Text>
+                            </Label>
+                        <Border BackgroundColor="{Binding BackgroundColor}"
+                                HeightRequest="100"
+                                WidthRequest="500">
+                            <Border Stroke="{Binding ForegroundColorHex}"
+                                    StrokeThickness="5">
+                                <Entry VerticalOptions="Center"
+                                       HorizontalOptions="Center"
+                                       Text="The five boxing wizards jump quickly."
+                                       FontSize="20"
+                                       BackgroundColor="White"
+                                       TextColor="Black"/>
+                            </Border>
+                        </Border>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+                
+                </VerticalStackLayout>
+                <Frame CornerRadius="10">
+                    <VerticalStackLayout>
+                        <Label Text="APCA"
+                               FontSize="32" 
+                               HorizontalOptions="Center"/>
+                        <Frame CornerRadius="10">
+                        <Grid MinimumWidthRequest="500"
+                              MaximumWidthRequest="500">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="50" />
+                                <RowDefinition Height="100" />
+                                <RowDefinition Height="50" />
+                                <RowDefinition Height="100" />
+                                <RowDefinition Height="50" />
+                                <RowDefinition Height="100" />
+                                <RowDefinition Height="50" />
+                                <RowDefinition Height="100" />
+                                <RowDefinition Height="50" />
+                                <RowDefinition Height="100" />
+                            </Grid.RowDefinitions>
+                            <BoxView Grid.RowSpan="10" Color="{Binding BackgroundColor}" />
+                            <Rectangle BackgroundColor="#E4E4E4"/>
+                            <Rectangle BackgroundColor="#E4E4E4" 
+                                       Grid.Row="2" />
+                            <Rectangle BackgroundColor="#CACACA" 
+                                       Grid.Row="4" />
+                            <Rectangle BackgroundColor="#BFBFBF"
+                                       Grid.Row="6" />
+                            <Rectangle BackgroundColor="#B3B3B3" 
+                                       Grid.Row="8"/>
+                            <Label Text="300 (Light)"
+                                   FontSize="24"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   TextColor="#666666"
+                                   FontFamily="OpenSansLight"/>                                        
+                            <Label Text="The five boxing wizards jump quickly." 
+                                   FontFamily="OpenSansLight"
+                                   TextColor="{Binding ForegroundColor}"
+                                   Grid.Row="1"
+                                   MaximumWidthRequest="500"/>
+                            <Label Text="400 (Regular)"
+                                   TextColor="#666666"
+                                   FontFamily="OpenSansRegular"
+                                   FontSize="24"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   Grid.Row="2" />                                      
+                            <Label Text="The five boxing wizards jump quickly." 
+                                   FontFamily="OpenSansRegular"
+                                   Grid.Row="3"
+                                   TextColor="{Binding ForegroundColor}"
+                                   MaximumWidthRequest="500"/>                                  
+                            <Label Text="500 (Light)"
+                                   TextColor="#666666"
+                                   FontSize="24"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   FontFamily="OpenSansMedium"
+                                   Grid.Row="4" />                                           
+                            <Label Text="The five boxing wizards jump quickly." 
+                                   FontFamily="OpenSansMedium"
+                                   Grid.Row="5"
+                                   TextColor="{Binding ForegroundColor}"
+                                   MaximumWidthRequest="500"/>                             
+                            <Label Text="600 (SemiBold)"
+                                   TextColor="#666666"
+                                   FontSize="24"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   FontFamily="OpenSansSemibold"
+                                   Grid.Row="6" />
+                            <Label Text="The five boxing wizards jump quickly." 
+                                   FontFamily="OpenSansSemibold"
+                                   Grid.Row="7"
+                                   TextColor="{Binding ForegroundColor}"
+                                   MaximumWidthRequest="500"/>
+                            <Label Text="700 (Bold)"
+                                   TextColor="#666666"
+                                   FontSize="24"
+                                   FontFamily="OpenSansBold"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   Grid.Row="8" />
+                            <Label Text="The five boxing wizards jump quickly." 
+                                   FontFamily="OpenSansBold"
+                                   Grid.Row="9"
+                                   TextColor="{Binding ForegroundColor}"
+                                   MaximumWidthRequest="500"/>
+                        </Grid>
+                        </Frame>
+                    <!-- <TableView Intent="Menu"> -->
+                    <!--     <TableSection> -->
+                    <!--         <ViewCell> -->
+                    <!--             <VerticalStackLayout BackgroundColor="{Binding BackgroundColor}"> -->
+                    <!--                 <Border  -->
+                    <!--                     BackgroundColor="#E4E4E4"> -->
+                    <!--                 <Label Text="300 (Light)" -->
+                    <!--                        FontSize="32" -->
+                    <!--                        TextColor="#666A6E" -->
+                    <!--                        FontFamily="OpenSansLight"/> -->
+                    <!--                 </Border> -->
+                    <!--                 <Border BackgroundColor="{Binding BackgroundColor}"> -->
+                    <!--                     <Label Text="The five boxing wizards jump quickly."  -->
+                    <!--                            FontFamily="OpenSansLight" -->
+                    <!--                            BackgroundColor="{Binding BackgroundColor}" -->
+                    <!--                            TextColor="{Binding ForegroundColor}" -->
+                    <!--                            MaximumWidthRequest="500"/> -->
+                    <!--                 </Border> -->
+                    <!--             </VerticalStackLayout> -->
+                    <!--         </ViewCell> -->
+                    <!--         <ViewCell> -->
+                    <!--             <VerticalStackLayout BackgroundColor="{Binding BackgroundColor}"> -->
+                    <!--                 <Label Text="400 (Regular)" -->
+                    <!--                        BackgroundColor="#CACACA" -->
+                    <!--                        TextColor="#666666" -->
+                    <!--                        FontFamily="OpenSansRegular" -->
+                    <!--                        FontSize="32"/> -->
+                    <!--                 <Label Text="The five boxing wizards jump quickly."  -->
+                    <!--                        FontFamily="OpenSansRegular" -->
+                    <!--                        BackgroundColor="{Binding BackgroundColor}" -->
+                    <!--                        TextColor="{Binding ForegroundColor}" -->
+                    <!--                        MaximumWidthRequest="500"/> -->
+                    <!--             </VerticalStackLayout> -->
+                    <!--         </ViewCell> -->
+                    <!--         <ViewCell> -->
+                    <!--             <VerticalStackLayout Spacing="5" BackgroundColor="{Binding BackgroundColor}"> -->
+                    <!--                 <Label Text="500 (Light)" -->
+                    <!--                        BackgroundColor="#BFBFBF" -->
+                    <!--                        TextColor="#666666" -->
+                    <!--                        FontSize="32" -->
+                    <!--                        FontFamily="OpenSansMedium"/> -->
+                    <!--                 <Label Text="The five boxing wizards jump quickly."  -->
+                    <!--                        FontFamily="OpenSansMedium" -->
+                    <!--                        BackgroundColor="{Binding BackgroundColor}" -->
+                    <!--                        TextColor="{Binding ForegroundColor}" -->
+                    <!--                        MaximumWidthRequest="500"/> -->
+                    <!--             </VerticalStackLayout> -->
+                    <!--         </ViewCell> -->
+                    <!--         <ViewCell> -->
+                    <!--             <VerticalStackLayout Spacing="5" BackgroundColor="{Binding BackgroundColor}"> -->
+                    <!--                 <Label Text="600 (SemiBold)" -->
+                    <!--                        BackgroundColor="#B9B9B9" -->
+                    <!--                        TextColor="#666666" -->
+                    <!--                        FontSize="32" -->
+                    <!--                        FontFamily="OpenSansSemibold"/> -->
+                    <!--                 <Label Text="The five boxing wizards jump quickly."  -->
+                    <!--                        FontFamily="OpenSansSemibold" -->
+                    <!--                        BackgroundColor="{Binding BackgroundColor}" -->
+                    <!--                        TextColor="{Binding ForegroundColor}" -->
+                    <!--                        MaximumWidthRequest="500"/> -->
+                    <!--             </VerticalStackLayout> -->
+                    <!--         </ViewCell> -->
+                    <!--         <ViewCell> -->
+                    <!--             <VerticalStackLayout Spacing="5" BackgroundColor="{Binding BackgroundColor}"> -->
+                    <!--                 <Label Text="700 (Bold)" -->
+                    <!--                        BackgroundColor="#B3B3B3" -->
+                    <!--                        TextColor="#666666" -->
+                    <!--                        FontSize="32" -->
+                    <!--                        FontFamily="OpenSansBold"/> -->
+                    <!--                 <Label Text="The five boxing wizards jump quickly."  -->
+                    <!--                        FontFamily="OpenSansBold" -->
+                    <!--                        BackgroundColor="{Binding BackgroundColor}" -->
+                    <!--                        TextColor="{Binding ForegroundColor}" -->
+                    <!--                        MaximumWidthRequest="500"/> -->
+                    <!--             </VerticalStackLayout> -->
+                    <!--         </ViewCell> -->
+                    <!--     </TableSection> -->
+                    <!-- </TableView> -->
+                    </VerticalStackLayout>
+                </Frame>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
     </ScrollView>
 
 </ContentPage>
